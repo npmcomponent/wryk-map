@@ -1,6 +1,6 @@
 {
   "name": "map",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "devDependencies": {
     "component": "~0.17.0",
     "LiveScript": "~1.2.0",

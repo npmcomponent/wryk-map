@@ -15,14 +15,17 @@ describe "new Map(iterable)" (...) !->
 			map = new Map [<[reporter nyan]>]
 
 			map.get 'reporter' .should.be.equal 'nyan'
-			# should(map.get('timeout')).equal undefined
+			should.not.exist map.get 'timeout'
 
 	describe ".set(key, value)" (...) !->
 		it "should set key/value entry" !->
 			map = new Map
 			map.set 'reporter' 'nyan'
+			map.set 'timeout' 2000
 
 			map.get 'reporter' .should.be.equal 'nyan'
+			map.get 'timeout' .should.be.equal 2000
+
 
 		it "should override existing entry" !->
 			map = new Map
@@ -35,7 +38,10 @@ describe "new Map(iterable)" (...) !->
 		it "should return true if key is defined" !->
 			map = new Map [<[reporter nyan]>]
 
+			map.set 'timeout' 2000
+
 			map.has 'reporter' .should.be.true
+			map.has 'timeout' .should.be.true
 
 		it "should return false if key isn't defined" !->
 			map = new Map
@@ -64,21 +70,21 @@ describe "new Map(iterable)" (...) !->
 
 			map.has 'reporter' .should.be.false
 			map.has 'timeout' .should.be.false
-			map.size!.should.be.equal 0
+			map.size.should.be.equal 0
 
-	describe ".size()" (...) !->
+	describe ".size" (...) !->
 		it "should return number of defined entries" !->
 			map = new Map [<[reporter nyan]> ['timeout' 2000]]
 
-			map.size!.should.be.equal 2
+			map.size.should.be.equal 2
 
 	describe ".forEach(callback [, context])" (...) !->
 		it "should call callback for all entries with (value, key, map)" !->
-			map = new Map [<[reporter nyan]> ['timeout' 2000]]
+			map = new Map [<[reporter nyan]>]
 
 			map.forEach (value, key, currentMap) !->
-				# value.should.be.equal 'nyan' .or.value.should.be.equal 2000
-				# key.should.be.equal 'reporter' .or.key.should.be.equal 'timeout'
+				value.should.be.equal 'nyan'
+				key.should.be.equal 'reporter'
 				currentMap.should.be.equal map
 
 		it "should use context as this context" !->
@@ -95,16 +101,24 @@ describe "new Map(iterable)" (...) !->
 			map = new Map [<[reporter nyan]> ['timeout' 2000]]
 			keys = map.keys!
 
-			# keys.should.contains 'reporter' .and.contains 'timeout'
+			keys[0].should.be.equal 'reporter'
+			keys[1].should.be.equal 'timeout'
 
 	describe ".values()" (...) !->
 		it "should return all defined values" !->
 			map = new Map [<[reporter nyan]> ['timeout' 2000]]
 			values = map.values!
 
-			# keys.should.contains 'nyan' .and.contains 2000
+			values[0].should.be.equal 'nyan'
+			values[1].should.be.equal 2000
 
 	describe ".entries()" (...) !->
 		it "should return all entries" !->
 			map = new Map [<[reporter nyan]> ['timeout' 2000]]
-			#need test ...
+			entries = map.entries!
+
+			entries[0][0].should.be.equal 'reporter'
+			entries[0][1].should.be.equal 'nyan'
+
+			entries[1][0].should.be.equal 'timeout'
+			entries[1][1].should.be.equal 2000
