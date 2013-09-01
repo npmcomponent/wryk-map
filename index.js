@@ -5,7 +5,7 @@ module.exports = Map;
 
 
 function indexOf (element) {
-	for (var i = this.length; i-- && !is(this[i], element););
+	for (var i = this.length; i-- && !is(this[i], element);) {}
 	return i;
 }
 
@@ -64,21 +64,15 @@ Map.prototype.forEach = function (callback, context) {
 };
 
 Map.prototype.keys = function () {
-	return this._keys;
+	return new MapIterator(this, 'key');
 };
 
 Map.prototype.values = function () {
-	return this._values;
+	return new MapIterator(this, 'value');
 };
 
-Map.prototype.entries = function () {
-	var items = [];
-
-	for (var i = -1, l = this._keys.length; ++i < l;) {
-		items.push([this._keys[i], this._values[i]]);
-	}
-
-	return items;
+Map.prototype.entries = Map.prototype.__iterator__ = function () {
+	return new MapIterator(this, 'key+value');
 };
 
 Map.prototype.iterator = function (kind) {
@@ -97,31 +91,39 @@ properties(Map.prototype)
 	.property('values').value().define()
 	.property('entries').value().define()
 	.property('iterator').value().define()
-	.property('size').getter(function () { return this._keys.length ; }).define()
+	.property('__iterator__').value().define()
+	.property('size')
+		.getter(function () {
+			return this._keys.length;
+		}).define()
 ;
 
 
 
 function MapIterator (map, kind) {
 	this._index = 0;
-	this._map = map;
+	this._keys = map._keys;
+	this._values = map._values;
 	this._kind = kind;
 }
 
 MapIterator.prototype.next = function () {
+	var key = this._keys[this._index] !== undefined ? this._keys[this._index] : null;
+	var value = this._values[this._index] !== undefined ? this._values[this._index] : null;
+
+	this._index++;
+
 	switch (this._kind) {
-		case 'keys':
-			return this._map._keys[this._index++];
+		case 'key':
+			return key;
 		break;
 
-		case 'values':
-			return this._map.values[this._index++];
+		case 'value':
+			return value;
 		break;
 
-		case 'keys+values':
-			var i = this._index;
-			this._index++;
-			return [this._map._keys[i], this._map._values[i]];
+		case 'key+value':
+			return key != null || value != null ? [key, value] : null;
 		break;
 	}
 };

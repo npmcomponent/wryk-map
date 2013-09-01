@@ -4,121 +4,116 @@ require! {
 }
 
 describe "new Map(iterable)" (...) !->
-	it "should return a new Map from iterable argument" !->
-		map = new Map [<[reporter nyan]> ['timeout' 2000]]
+	m = new Map [
+		<[a aa]>
+		<[b bb]>
+	]
 
-		map.get 'reporter' .should.be.equal 'nyan'
-		map.get 'timeout' .should.be.equal 2000
+	it "should initialize key/value entries from iterable" !->
+		m.get 'a' .should.be.equal 'aa'
+		m.get 'b' .should.be.equal 'bb'
 
 	describe ".get(key)" (...) !->
 		it "should return the key value or undefined" !->
-			map = new Map [<[reporter nyan]>]
+			m.get 'a' .should.be.equal 'aa'
+			should.not.exist m.get 'z'
 
-			map.get 'reporter' .should.be.equal 'nyan'
-			should.not.exist map.get 'timeout'
+	describe ".set(key)" (...) !->
+		it "should set a new key/value entry or override existing entry" !->
+			m.set 'c' 'cc'
+			m.get 'c' .should.be.equal 'cc'
 
-	describe ".set(key, value)" (...) !->
-		it "should set key/value entry" !->
-			map = new Map
-			map.set 'reporter' 'nyan'
-			map.set 'timeout' 2000
+		it "should still work with not string-based keys" !->
+			o = {}
+			m.set o, 'oo'
+			m.get o .should.be.equal 'oo'
 
-			map.get 'reporter' .should.be.equal 'nyan'
-			map.get 'timeout' .should.be.equal 2000
+		it "should take care about zero and NaN" !->
+			m.set -0 '-0'
+			m.get -0 .should.be.equal '-0'
 
+			m.set +0 '+0'
+			m.get +0 .should.be.equal '+0'
 
-		it "should override existing entry" !->
-			map = new Map
-			map.set 'reporter' 'nyan'
-			map.set 'reporter' 'spec'
-
-			map.get 'reporter' .should.be.equal 'spec'
-
-	describe ".has(key)" (...) !->
-		it "should return true if key is defined" !->
-			map = new Map [<[reporter nyan]>]
-
-			map.set 'timeout' 2000
-
-			map.has 'reporter' .should.be.true
-			map.has 'timeout' .should.be.true
-
-		it "should return false if key isn't defined" !->
-			map = new Map
-
-			map.has 'reporter' .should.be.false
+			m.set NaN, 'NaN'
+			m.get NaN .should.be.equal 'NaN'
 
 	describe ".delete(key)" (...) !->
-		it "should delete key/value entry" !->
-			map = new Map [<[reporter nyan]>]
-			map.delete 'reporter'
-
-			map.has 'reporter' .should.be.false
+		it "should remove a new key/value entry" !->
+			should.exist m.get 'c'
+			m.delete 'c'
+			should.not.exist m.get 'c'
 
 		it "should return true if an entry are deleted" !->
-			map = new Map [<[reporter nyan]>]
-			map.delete 'reporter' .should.be.true
+			m.set 'c' 'cc'
+			m.delete 'c' .should.be.true
 
-		it "should return false if an entry are deleted" !->
-			map = new Map
-			map.delete 'reporter' .should.be.false
+		it "should return false if an entry not are deleted" !->
+			m.delete 'c' .should.be.false
+
+
+	describe ".has(key)" (...) !->
+		it "should return true if key/value entry is defined" !->
+			m.has 'a' .should.be.true
+
+		it "should return false if key/value entry is not defined" !->
+			m.has 'z' .should.be.false
+
 
 	describe ".clear()" (...) !->
 		it "should delete all key/value entries" !->
-			map = new Map [<[reporter nyan]> ['timeout' 2000]]
-			map.clear!
+			m.clear!
+			m.size.should.be.equal 0
 
-			map.has 'reporter' .should.be.false
-			map.has 'timeout' .should.be.false
-			map.size.should.be.equal 0
 
 	describe ".size" (...) !->
-		it "should return number of defined entries" !->
-			map = new Map [<[reporter nyan]> ['timeout' 2000]]
-
-			map.size.should.be.equal 2
+		it "should return the number of entries" !->
+			m.size.should.be.equal 0
+			m.set 'a' 'aa'
+			m.size.should.be.equal 1
 
 	describe ".forEach(callback [, context])" (...) !->
 		it "should call callback for all entries with (value, key, map)" !->
-			map = new Map [<[reporter nyan]>]
+			m.set 'b' 'bb'
+			m.set 'c' 'cc'
 
-			map.forEach (value, key, currentMap) !->
-				value.should.be.equal 'nyan'
-				key.should.be.equal 'reporter'
-				currentMap.should.be.equal map
+			counter = 0
+			m.forEach (value, key, map) !->
+				counter++
+				value.should.be.equal m.get key
+				map.should.be.equal m
 
-		it "should use context as this context" !->
-			map = new Map [<[reporter nyan]> ['timeout' 2000]]
+			counter.should.be.equal m.size
+
+		it "should use context as current context" !->
 			context = {}
-
-			map.forEach do
+			m.forEach do
 				!-> @should.be.equal context
 				context
 
-
 	describe ".keys()" (...) !->
-		it "should return all defined keys" !->
-			map = new Map [<[reporter nyan]> ['timeout' 2000]]
-			keys = map.keys!
+		it "should return a map keys iterator" !->
+			iterator = m.keys!
 
-			keys[0].should.be.equal 'reporter'
-			keys[1].should.be.equal 'timeout'
+			while (key = iterator.next!) != null
+				m.has key .should.be.true
 
 	describe ".values()" (...) !->
-		it "should return all defined values" !->
-			map = new Map [<[reporter nyan]> ['timeout' 2000]]
-			values = map.values!
+		it "should return a map values iterator" !->
+			iterator = m.values!
 
-			values[0].should.be.equal 'nyan'
-			values[1].should.be.equal 2000
+			while (value = iterator.next!) != null
+				found = false
+
+				m.forEach !-> found := true if it == value
+
+				found.should.be.true
+				
 
 	describe ".entries()" (...) !->
-		it "should return all entries" !->
-			map = new Map [<[reporter nyan]> ['timeout' 2000]]
-			entries = map.entries!
+		it "should return a map entries iterator" !->
+			iterator = m.entries!
 
-			entries[0][0].should.be.equal 'reporter'
-			entries[0][1].should.be.equal 'nyan'
-
-			entries[1][0].should.be.equal 'timeout'
-			entries[1][1].should.be.equal 2000
+			while (entry = iterator.next!) != null
+				[key, value] = entry
+				m.get key .should.be.equal value
