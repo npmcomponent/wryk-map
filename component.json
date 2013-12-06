@@ -6,11 +6,11 @@
   "keywords": [
     "map",
     "data",
-    "structure"
+    "structure",
+    "es6"
   ],
   "dependencies": {
-    "matthewp/is": "*",
-    "wryk/properties": "*"
+    "matthewp/is": "*"
   },
   "development": {},
   "license": "MIT",

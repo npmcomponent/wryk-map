@@ -1,7 +1,5 @@
-require! {
-	Map: '../build/map'
-	should
-}
+should = require 'chai' .should!
+Map = require '../build/'
 
 describe "new Map(iterable)" (...) !->
 	m = new Map [
@@ -28,7 +26,7 @@ describe "new Map(iterable)" (...) !->
 			m.set o, 'oo'
 			m.get o .should.be.equal 'oo'
 
-		it "should take care about zero and NaN" !->
+		it "should take care about zero and NaN keyss" !->
 			m.set -0 '-0'
 			m.get -0 .should.be.equal '-0'
 
@@ -39,7 +37,7 @@ describe "new Map(iterable)" (...) !->
 			m.get NaN .should.be.equal 'NaN'
 
 	describe ".delete(key)" (...) !->
-		it "should remove a new key/value entry" !->
+		it "should remove a key/value entry" !->
 			should.exist m.get 'c'
 			m.delete 'c'
 			should.not.exist m.get 'c'
