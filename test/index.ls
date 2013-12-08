@@ -1,7 +1,7 @@
 should = require 'chai' .should!
 Map = require '../build/'
 
-describe "new Map(iterable)" (...) !->
+describe 'new Map(iterable)' (...) !->
 	m = new Map [
 		<[a aa]>
 		<[b bb]>
@@ -11,12 +11,12 @@ describe "new Map(iterable)" (...) !->
 		m.get 'a' .should.be.equal 'aa'
 		m.get 'b' .should.be.equal 'bb'
 
-	describe ".get(key)" (...) !->
+	describe '#get(key)' (...) !->
 		it "should return the key value or undefined" !->
 			m.get 'a' .should.be.equal 'aa'
 			should.not.exist m.get 'z'
 
-	describe ".set(key)" (...) !->
+	describe '#set(key)' (...) !->
 		it "should set a new key/value entry or override existing entry" !->
 			m.set 'c' 'cc'
 			m.get 'c' .should.be.equal 'cc'
@@ -26,7 +26,7 @@ describe "new Map(iterable)" (...) !->
 			m.set o, 'oo'
 			m.get o .should.be.equal 'oo'
 
-		it "should take care about zero and NaN keyss" !->
+		it "should take care about zero and NaN keys" !->
 			m.set -0 '-0'
 			m.get -0 .should.be.equal '-0'
 
@@ -36,7 +36,7 @@ describe "new Map(iterable)" (...) !->
 			m.set NaN, 'NaN'
 			m.get NaN .should.be.equal 'NaN'
 
-	describe ".delete(key)" (...) !->
+	describe '#delete(key)' (...) !->
 		it "should remove a key/value entry" !->
 			should.exist m.get 'c'
 			m.delete 'c'
@@ -50,7 +50,7 @@ describe "new Map(iterable)" (...) !->
 			m.delete 'c' .should.be.false
 
 
-	describe ".has(key)" (...) !->
+	describe '#has(key)' (...) !->
 		it "should return true if key/value entry is defined" !->
 			m.has 'a' .should.be.true
 
@@ -58,19 +58,19 @@ describe "new Map(iterable)" (...) !->
 			m.has 'z' .should.be.false
 
 
-	describe ".clear()" (...) !->
+	describe '#clear()' (...) !->
 		it "should delete all key/value entries" !->
 			m.clear!
 			m.size.should.be.equal 0
 
 
-	describe ".size" (...) !->
+	describe '#size' (...) !->
 		it "should return the number of entries" !->
 			m.size.should.be.equal 0
 			m.set 'a' 'aa'
 			m.size.should.be.equal 1
 
-	describe ".forEach(callback [, context])" (...) !->
+	describe '#forEach(callback [, context])' (...) !->
 		it "should call callback for all entries with (value, key, map)" !->
 			m.set 'b' 'bb'
 			m.set 'c' 'cc'
@@ -89,14 +89,14 @@ describe "new Map(iterable)" (...) !->
 				!-> @should.be.equal context
 				context
 
-	describe ".keys()" (...) !->
+	describe '#keys()' (...) !->
 		it "should return a map keys iterator" !->
 			iterator = m.keys!
 
 			while (key = iterator.next!) != null
 				m.has key .should.be.true
 
-	describe ".values()" (...) !->
+	describe '#values()' (...) !->
 		it "should return a map values iterator" !->
 			iterator = m.values!
 
@@ -105,10 +105,9 @@ describe "new Map(iterable)" (...) !->
 
 				m.forEach !-> found := true if it == value
 
-				found.should.be.true
-				
+				found.should.be.true		
 
-	describe ".entries()" (...) !->
+	describe '#entries()' (...) !->
 		it "should return a map entries iterator" !->
 			iterator = m.entries!
 

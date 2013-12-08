@@ -32,6 +32,7 @@ function Map (iterable) {
 }
 
 /**
+ * get entry value associated with `key`
  * @method get
  * @param {any} key
  * @return {any}
@@ -41,6 +42,7 @@ Map.prototype.get = function (key) {
 };
 
 /**
+ * set entry value associated with `key`
  * @method set
  * @param {any} key
  * @param {any} value
@@ -58,15 +60,7 @@ Map.prototype.set = function (key, value) {
 };
 
 /**
- * @method has
- * @param {any} key
- * @return {Boolean}
-**/
-Map.prototype.has = function (key) {
-	return indexOf.call(this._keys, key) > -1 ? true : false;
-};
-
-/**
+ * remove entry key and value with `key`
  * @method delete
  * @param {any} key
  * @return {Boolean}
@@ -84,6 +78,18 @@ Map.prototype.delete = function (key) {
 };
 
 /**
+ * entry existence
+ * @method has
+ * @param {any} key
+ * @return {Boolean}
+**/
+Map.prototype.has = function (key) {
+	return indexOf.call(this._keys, key) > -1 ? true : false;
+};
+
+
+/**
+ * remove all entries
  * @method clear
 **/
 Map.prototype.clear = function () {
@@ -92,6 +98,7 @@ Map.prototype.clear = function () {
 };
 
 /**
+ * numbers of entries
  * @readonly
  * @property size
  * @type {Number}
@@ -105,6 +112,7 @@ Object.defineProperty(Map.prototype, 'size', {
 });
 
 /**
+ * call `callback` with `context` as this for all entries with (value, key, hash)
  * @method forEach
  * @param {Function} callback
  * @param {Object} context
@@ -116,6 +124,7 @@ Map.prototype.forEach = function (callback, context) {
 };
 
 /**
+ * iterator over `kind`
  * @method iterator
  * @param {String} kind
  * @return {MapIterator}
@@ -125,6 +134,7 @@ Map.prototype.iterator = function (kind) {
 };
 
 /**
+ * iterator over keys
  * @method keys
  * @return {MapIterator}
 **/
@@ -133,6 +143,7 @@ Map.prototype.keys = function () {
 };
 
 /**
+ * iterator over values
  * @method values
  * @return {MapIterator}
 **/
@@ -141,6 +152,7 @@ Map.prototype.values = function () {
 };
 
 /**
+ * iterator over entries
  * @method entries
  * @return {MapIterator}
 **/
@@ -166,6 +178,7 @@ function MapIterator (map, kind) {
 }
 
 /**
+ * iterate over key/value/entry
  * @method next
  * @return {any}
 **/
