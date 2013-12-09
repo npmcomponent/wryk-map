@@ -18,7 +18,6 @@ function indexOf (element) {
  * @class Map
  * @constructor
  * @param {Array} iterable
- * @return {Map}
 **/
 function Map (iterable) {
 	this._keys = [];
@@ -44,19 +43,22 @@ Map.prototype.get = function (key) {
 /**
  * set entry value associated with `key`
  * @method set
+ * @chainable
  * @param {any} key
  * @param {any} value
+ * @return {Hash}
 **/
 Map.prototype.set = function (key, value) {
 	var index = indexOf.call(this._keys, key);
 	
 	if (index > -1) {
 		this._values[index] = value;
-		return;
+	} else {
+		this._keys.push(key);
+		this._values.push(value);
 	}
 
-	this._keys.push(key);
-	this._values.push(value);
+	return this;
 };
 
 /**
