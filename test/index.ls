@@ -36,6 +36,9 @@ describe 'new Map(iterable)' (...) !->
 			m.set NaN, 'NaN'
 			m.get NaN .should.be.equal 'NaN'
 
+		it "should return this" !->
+			m.set 'c' 'cc' .should.be.equal m
+
 	describe '#delete(key)' (...) !->
 		it "should remove a key/value entry" !->
 			should.exist m.get 'c'
