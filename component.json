@@ -2,12 +2,11 @@
   "name": "map",
   "repo": "wryk/map",
   "description": "map data structure",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "keywords": [
     "map",
     "data",
-    "structure",
-    "es6"
+    "structure"
   ],
   "dependencies": {
     "matthewp/is": "*"

@@ -1,6 +1,6 @@
 # Map
 
-a es6 like Map object without object as key feature (perf improvement)
+Map object like es6 Map
 
 
 ## Installation
