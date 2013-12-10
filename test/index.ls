@@ -1,119 +1,140 @@
 should = require 'chai' .should!
 Map = require '../build/'
 
+object = {}
+foo = ->
+bar = ->
+
 describe 'new Map(iterable)' (...) !->
-	m = new Map [
+	map = new Map [
 		<[a aa]>
 		<[b bb]>
 	]
 
 	it "should initialize key/value entries from iterable" !->
-		m.get 'a' .should.be.equal 'aa'
-		m.get 'b' .should.be.equal 'bb'
+		map.get 'a' .should.be.equal 'aa'
+		map.get 'b' .should.be.equal 'bb'
+
 
 	describe '#get(key)' (...) !->
 		it "should return the key value or undefined" !->
-			m.get 'a' .should.be.equal 'aa'
-			should.not.exist m.get 'z'
+			map.get 'a' .should.be.equal 'aa'
+			should.not.exist map.get 'z'
+
 
 	describe '#set(key)' (...) !->
 		it "should set a new key/value entry or override existing entry" !->
-			m.set 'c' 'cc'
-			m.get 'c' .should.be.equal 'cc'
+			map.set 'c' 'ccc'
+			map.get 'c' .should.be.equal 'ccc'
 
-		it "should still work with not string-based keys" !->
-			o = {}
-			m.set o, 'oo'
-			m.get o .should.be.equal 'oo'
+			map.set 'c' 'cc'
+			map.get 'c' .should.be.equal 'cc'
+
+		it "should still work with no string-based keys" !->
+			map.set object, 'oo'
+			map.set foo, 'foo'
+			map.set bar, 'bar'
+
+			map.get object .should.be.equal 'oo'
+			map.get foo .should.be.equal 'foo'
+			map.get bar .should.be.equal 'bar'
 
 		it "should take care about zero and NaN keys" !->
-			m.set -0 '-0'
-			m.get -0 .should.be.equal '-0'
+			map.set -0 '-0'
+			map.set +0 '+0'
+			map.set NaN, 'NaN'
+			
+			map.get -0 .should.be.equal '-0'
+			map.get +0 .should.be.equal '+0'
+			map.get NaN .should.be.equal 'NaN'
 
-			m.set +0 '+0'
-			m.get +0 .should.be.equal '+0'
+		it "is chainable" !->
+			map.set 'c' 'cc' .should.be.equal map
 
-			m.set NaN, 'NaN'
-			m.get NaN .should.be.equal 'NaN'
-
-		it "should return this" !->
-			m.set 'c' 'cc' .should.be.equal m
 
 	describe '#delete(key)' (...) !->
 		it "should remove a key/value entry" !->
-			should.exist m.get 'c'
-			m.delete 'c'
-			should.not.exist m.get 'c'
+			should.exist map.get 'c'
+			map.delete 'c'
+			should.not.exist map.get 'c'
 
 		it "should return true if an entry are deleted" !->
-			m.set 'c' 'cc'
-			m.delete 'c' .should.be.true
+			map.set 'c' 'cc'
+			map.delete 'c' .should.be.true
 
 		it "should return false if an entry not are deleted" !->
-			m.delete 'c' .should.be.false
+			map.delete 'c' .should.be.false
 
 
 	describe '#has(key)' (...) !->
 		it "should return true if key/value entry is defined" !->
-			m.has 'a' .should.be.true
+			map.has 'a' .should.be.true
+			map.has NaN .should.be.true
+			map.has foo .should.be.true
 
 		it "should return false if key/value entry is not defined" !->
-			m.has 'z' .should.be.false
+			map.has 'z' .should.be.false
+			map.has {} .should.be.false
+			map.has -> .should.be.false
 
 
 	describe '#clear()' (...) !->
 		it "should delete all key/value entries" !->
-			m.clear!
-			m.size.should.be.equal 0
+			map.clear!
+			map.size.should.be.equal 0
 
 
 	describe '#size' (...) !->
 		it "should return the number of entries" !->
-			m.size.should.be.equal 0
-			m.set 'a' 'aa'
-			m.size.should.be.equal 1
+			map.size.should.be.equal 0
+			map.set 'a' 'aa'
+			map.size.should.be.equal 1
+
 
 	describe '#forEach(callback [, context])' (...) !->
 		it "should call callback for all entries with (value, key, map)" !->
-			m.set 'b' 'bb'
-			m.set 'c' 'cc'
+			map.set 'b' 'bb'
+			map.set 'c' 'cc'
 
 			counter = 0
-			m.forEach (value, key, map) !->
+			map.forEach (value, key, m) !->
 				counter++
-				value.should.be.equal m.get key
-				map.should.be.equal m
+				value.should.be.equal map.get key
+				m.should.be.equal map
 
-			counter.should.be.equal m.size
+			counter.should.be.equal map.size
 
 		it "should use context as current context" !->
 			context = {}
-			m.forEach do
+			map.forEach do
 				!-> @should.be.equal context
 				context
 
+
 	describe '#keys()' (...) !->
 		it "should return a map keys iterator" !->
-			iterator = m.keys!
+			iterator = map.keys!
 
 			while (key = iterator.next!) != null
-				m.has key .should.be.true
+				map.has key .should.be.true
+
 
 	describe '#values()' (...) !->
 		it "should return a map values iterator" !->
-			iterator = m.values!
+			iterator = map.values!
 
 			while (value = iterator.next!) != null
 				found = false
 
-				m.forEach !-> found := true if it == value
+				map.forEach !-> found := true if it == value
 
 				found.should.be.true		
 
+
 	describe '#entries()' (...) !->
 		it "should return a map entries iterator" !->
-			iterator = m.entries!
+			iterator = map.entries!
 
 			while (entry = iterator.next!) != null
 				[key, value] = entry
-				m.get key .should.be.equal value
+				map.get key .should.be.equal value
