@@ -1,4 +1,4 @@
-var is = require('is');
+var is = require('matthewp-is');
 
 module.exports = Map;
 
